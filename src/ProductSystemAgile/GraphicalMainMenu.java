@@ -4,10 +4,14 @@ Date Created : 11/10/2019
 */
 package ProductSystemAgile;
 
+import database.AddProduct;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 public class GraphicalMainMenu extends JPanel implements ActionListener {
 
@@ -25,13 +29,13 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
         // This will change as there will be more buttons required for a loggedin user
         int rows = 0;
         if (Window.isCustomer)
-            rows = 2;
+            rows = 4;
         else if (Window.isAdmin)
-            rows = 3;
+            rows = 6;
         else if (Window.isStaff)
-            rows = 2;
+            rows = 5;
         // sets the size of the window
-        this.setPreferredSize(new Dimension(300,120* rows));
+        this.setPreferredSize(new Dimension(300,(120* rows)));
 
         // creates the innerpanel with 'rows' as the number of rows
         JPanel innerPanel = new JPanel(new GridLayout(rows,0,0,40));
@@ -39,6 +43,7 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
 
         // sets relevent menu title depending on the user type
         JLabel title = new JLabel();
+
         if (Window.isCustomer)
             title = new JLabel("Store");
         else if (Window.isAdmin)
@@ -46,16 +51,22 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
         else if (Window.isStaff)
             title = new JLabel("Stock - Staff");
 
+        title.setFont(new Font("Arial", Font.PLAIN, 22));
         innerPanel.add(title);
 
         // main menu buttons are declared and initialised
         JButton addNewProduct = new JButton();
+        JButton updateProduct = new JButton();
         JButton viewStock = new JButton();
+        JButton FAQButton = new JButton();
         JButton logout = new JButton();
+
 
         // action commands for all buttons are added - this lets the program differentiate each button
         addNewProduct.setActionCommand("add new product");
-        viewStock.setActionCommand("view bookings");
+        updateProduct.setActionCommand("update product");
+        viewStock.setActionCommand("view stock");
+        FAQButton.setActionCommand("open FAQ");
         logout.setActionCommand("logout");
 
         // sets the size of the create booking button - due to being in a gridlayout, all components in the grid will have this layout
@@ -63,21 +74,28 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
 
         // button alignement is set so they are all centered
         addNewProduct.setAlignmentX(Component.CENTER_ALIGNMENT);
+        updateProduct.setAlignmentX(Component.CENTER_ALIGNMENT);
         viewStock.setAlignmentX(Component.CENTER_ALIGNMENT);
+        FAQButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         logout.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
         // text for all buttons is set
         addNewProduct.setText("Add New Product");
+        updateProduct.setText("Update Product");
+        FAQButton.setText("Open FAQ");
         logout.setText("Logout");
 
         // this class is set to all buttons ActionListener - this class implements ActionListener
         addNewProduct.addActionListener(this);
+        updateProduct.addActionListener(this);
         viewStock.addActionListener(this);
+        FAQButton.addActionListener(this);
         logout.addActionListener(this);
 
 
         addNewProduct.setVisible(true);
+        updateProduct.setVisible(true);
         viewStock.setVisible(true);
         logout.setVisible(true);
 
@@ -85,21 +103,19 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
         if (Window.isCustomer){
             viewStock.setText("Browse Products");
 
-            innerPanel.add(viewStock);
-            innerPanel.add(logout);
         }else if (Window.isAdmin){
             viewStock.setText("View Stock");
 
             innerPanel.add(addNewProduct);
-            innerPanel.add(viewStock);
-            innerPanel.add(logout);
+            innerPanel.add(updateProduct);
         } else if (Window.isStaff){
             viewStock.setText("View Stock");
-            innerPanel.add(viewStock);
-            innerPanel.add(logout);
-            logout.setVisible(true);            // logout button is visible
+            innerPanel.add(updateProduct);
         }
 
+        innerPanel.add(viewStock);
+        innerPanel.add(FAQButton);
+        innerPanel.add(logout);
 
         // sets the layout of this class (JPanel) to a centered flowlayout
         setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -111,15 +127,26 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
+        System.out.println("===========================");
+        System.out.println(actionEvent.getActionCommand());
         if ("add new product".equals(actionEvent.getActionCommand())) {
             // if the create booking button is pressed
             System.out.println("Opening 'Add new product' page...");   // console output for debuggin
-            Window.startCreateBookingScreen();      // create booking screen is called
+            Window.startCreateProductScreen("add");      // create booking screen is called
         }
         if ("view stock".equals(actionEvent.getActionCommand())) {
             // if the view bookings button is pressed
             System.out.println("Opening 'view stock' page...");     // console output for debuggin
-            Window.startViewBookingScreen();        // view booking screen is called
+            Window.startViewProductScreen();        // view booking screen is called
+        }
+        if ("open FAQ".equals(actionEvent.getActionCommand())){
+            File htmlFile = new File("src/FAQ.html");
+            try {
+                System.out.println("Opening 'FAQ' page externally...");
+                Desktop.getDesktop().browse(htmlFile.toURI());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         if ("logout".equals(actionEvent.getActionCommand())) {
             // if the logout button is pressed
@@ -129,6 +156,10 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
             Window.isAdmin = false;
             Window.isCustomer = false;
             Window.startLoginScreen();                 // main menu is called
+        }
+        if ("update product".equals(actionEvent.getActionCommand())){
+            System.out.println("Opening 'Update Product' page...");
+            Window.startCreateProductScreen("update");
         }
     }
 }

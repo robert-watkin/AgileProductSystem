@@ -15,7 +15,9 @@ public class CreateTable {
                 "productID integer PRIMARY KEY, \n" +
                 "product string NOT NULL, \n" +
                 "stockAmount integer NOT NULL, \n" +
-                "price float NOT NULL);";
+                "price float NOT NULL, \n" +
+                "availability bit NOT NULL, \n" +
+                "image string);";
 
         try (Connection conn = DriverManager.getConnection(url); Statement stmt = conn.createStatement()){
             stmt.execute(sql);

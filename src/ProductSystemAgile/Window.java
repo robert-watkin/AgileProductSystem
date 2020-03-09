@@ -21,11 +21,11 @@ public class Window  {
 
     private static JPanel mainMenu;
     private static JPanel loginScreen;
-    private static JPanel createBooking;
-    private static JPanel viewBooking;
+    private static JPanel createProduct;
+    private static JPanel viewStock;
 
     public static Color backgroundColor = Color.orange;
-    public static String url = "jdbc:sqlite:C:\\\\Users/robert.watkin\\IdeaProjects\\hotelBookingSystem\\bookings.db";
+    public static String url = "jdbc:sqlite:C:\\\\Users/robert.watkin\\IdeaProjects\\ProductSystemAgile\\stock.db";
     // END OF VARIABLE DECLARATION
 
     // Program entry point - main function
@@ -75,20 +75,20 @@ public class Window  {
     }
 
     // this function starts the create booking screen
-    public static void startCreateBookingScreen(){
-        createBooking = new CreateProduct();
-        createBooking.setVisible(true);
+    public static void startCreateProductScreen(String mode){
+        createProduct = new CreateProduct(mode);
+        createProduct.setVisible(true);
         f.getContentPane().removeAll();
-        f.getContentPane().add(createBooking);
+        f.getContentPane().add(createProduct);
         f.pack();
         f.setVisible(true);
     }
 
     // this function starts the view booking screen
-    public static void startViewBookingScreen(){
-        viewBooking = new ViewBookings();
+    public static void startViewProductScreen(){
+        viewStock = new ViewStock();
         f.getContentPane().removeAll();
-        f.getContentPane().add(viewBooking);
+        f.getContentPane().add(viewStock);
         f.pack();
         f.setVisible(true);
     }
