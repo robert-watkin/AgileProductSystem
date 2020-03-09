@@ -23,15 +23,13 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
         this.setBackground(Window.backgroundColor);
         // Declares integer for the rows of the grid layout
         // This will change as there will be more buttons required for a loggedin user
-        int rows;
-        if (Window.loggedIn) {
-            // if loggedIn
-            rows = 4;   // set rows to 4
-        }
-        else {
-            // else
-            rows = 3;   // set rows to 3
-        }
+        int rows = 0;
+        if (Window.isCustomer)
+            rows = 2;
+        else if (Window.isAdmin)
+            rows = 3;
+        else if (Window.isStaff)
+            rows = 2;
         // sets the size of the window
         this.setPreferredSize(new Dimension(300,120* rows));
 
@@ -61,7 +59,7 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
         logout.setActionCommand("logout");
 
         // sets the size of the create booking button - due to being in a gridlayout, all components in the grid will have this layout
-        addNewProduct.setPreferredSize(new Dimension(150,75));
+        logout.setPreferredSize(new Dimension(150,75));
 
         // button alignement is set so they are all centered
         addNewProduct.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -97,8 +95,8 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
             innerPanel.add(logout);
         } else if (Window.isStaff){
             viewStock.setText("View Stock");
-
-            viewStock.setVisible(true);      // viewbookings button is visble
+            innerPanel.add(viewStock);
+            innerPanel.add(logout);
             logout.setVisible(true);            // logout button is visible
         }
 
@@ -115,22 +113,17 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent actionEvent) {
         if ("add new product".equals(actionEvent.getActionCommand())) {
             // if the create booking button is pressed
-            System.out.println("Create Booking");   // console output for debuggin
+            System.out.println("Opening 'Add new product' page...");   // console output for debuggin
             Window.startCreateBookingScreen();      // create booking screen is called
         }
-        if ("admin login".equals(actionEvent.getActionCommand())) {
-            // if the admin login button is pressed
-            System.out.println("Admin Login");      // console output for debuggin
-            Window.startLoginScreen();              // login screen is called
-        }
-        if ("view bookings".equals(actionEvent.getActionCommand())) {
+        if ("view stock".equals(actionEvent.getActionCommand())) {
             // if the view bookings button is pressed
-            System.out.println("View Booking");     // console output for debuggin
+            System.out.println("Opening 'view stock' page...");     // console output for debuggin
             Window.startViewBookingScreen();        // view booking screen is called
         }
         if ("logout".equals(actionEvent.getActionCommand())) {
             // if the logout button is pressed
-            System.out.println("Logout");           // console output for debuggin
+            System.out.println("Logging out...");           // console output for debuggin
             Window.loggedIn = false;                // loggedIn variable is set to false
             Window.isStaff = false;
             Window.isAdmin = false;

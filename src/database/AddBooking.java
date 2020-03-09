@@ -12,18 +12,15 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class AddBooking {
-    public static void add(String name, int holidayDuration, String hotelRoom, float subtotal, float roomPrice, String startDate){
+    public static void add(String product, int stockAmount, float price){
         String url = Window.getUrl();
 
-        String sql = "INSERT INTO bookings(name, holidayDuration, hotelRoom, subtotal, roomPrice, startDate) VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO products(product, stockAmount, price) VALUES(?,?,?)";
 
         try (Connection conn = DriverManager.getConnection(url); PreparedStatement pstmt = conn.prepareStatement(sql)){
-            pstmt.setString(1, name);
-            pstmt.setInt(2, holidayDuration);
-            pstmt.setString(3, hotelRoom);
-            pstmt.setFloat(4, subtotal);
-            pstmt.setFloat(5, roomPrice);
-            pstmt.setString(6, startDate);
+            pstmt.setString(1, product);
+            pstmt.setInt(2, stockAmount);
+            pstmt.setFloat(3, price);
             pstmt.execute();
         } catch (SQLException e){
             System.out.println(e.getMessage());
