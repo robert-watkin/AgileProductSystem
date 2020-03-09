@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="hotelBookingSystem:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/hotelBookingSystem_jar</output-path>
+    <root id="archive" name="hotelBookingSystem.jar">
+      <element id="module-output" name="hotelBookingSystem" />
+      <element id="file-copy" path="$PROJECT_DIR$/sqlite-jdbc-3.27.2.1.jar" />
+    </root>
+  </artifact>
+</component>
