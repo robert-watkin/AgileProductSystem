@@ -12,23 +12,24 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class AddProduct {
-    public static void add(String product, int stockAmount, float price, int availability){
+    public static void add(String product, int stockAmount, float price, int availability, String image){
         String url = Window.getUrl();
 
-        String sql = "INSERT INTO products(product, stockAmount, price, availability) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO products(product, stockAmount, price, availability, image) VALUES(?,?,?,?,?)";
 
         try (Connection conn = DriverManager.getConnection(url); PreparedStatement pstmt = conn.prepareStatement(sql)){
             pstmt.setString(1, product);
             pstmt.setInt(2, stockAmount);
             pstmt.setFloat(3, price);
             pstmt.setInt(4, availability);
+            pstmt.setString(5, image);
             pstmt.execute();
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }
     }
 
-    public static void update(int id, String product, int stockAmount, float price, int availability){
+    public static void update(int id, String product, int stockAmount, float price, int availability, String image){
         String url = Window.getUrl();
 
         String sql = "UPDATE products \n" +
@@ -36,6 +37,7 @@ public class AddProduct {
                 "', stockAmount = " + stockAmount +
                 ", price = " + price +
                 ", availability = '" + availability + "'\n" +
+                ", image = '" + image + "'\n" +
                 "WHERE productID = '" + id + "';";
 
         try (Connection conn = DriverManager.getConnection(url); PreparedStatement pstmt = conn.prepareStatement(sql)){

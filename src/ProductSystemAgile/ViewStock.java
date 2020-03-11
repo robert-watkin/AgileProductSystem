@@ -56,45 +56,53 @@ public class ViewStock extends JPanel implements ActionListener {
         }
 
         // array list holds all of the bookings in the database
-        ArrayList<Product> productList = bookingList();
+        ArrayList<Product> productList = getProducts();
+        for (Product p : productList){
+            System.out.println("================");
+            System.out.println(p.getProductID());
+            System.out.println(p.getProduct());
+        }
 
         // a new table model from the table above is created
 
         // object array is created to hold the values within each row of the database
 
 
-        Object[] row = new Object[cols];
         Object[][] data = new Object[productList.size()][cols];
         // for loop goes through each row in the database
         for (int i=0; i < productList.size(); i++){
             //String imgURL = productList.
             ImageIcon finalImage = new ImageIcon();
-            try {
-                BufferedImage img = ImageIO.read(new File("src/assets/mug.png"));
-                float mult = img.getWidth() / 100;
-                float height = img.getHeight() / mult;
-                Image resizedImg = img.getScaledInstance(100, (int) height, Image.SCALE_SMOOTH);
-                finalImage = new ImageIcon(resizedImg);
-            } catch (Exception e){
-                e.printStackTrace();
+            String imgUrl = productList.get(i).getImage();
+            if (imgUrl != null && !imgUrl.equals("")) {
+                try {
+
+
+                    BufferedImage img = ImageIO.read(new File(imgUrl));
+                    float mult = img.getWidth() / 100;
+                    float height = img.getHeight() / mult;
+                    Image resizedImg = img.getScaledInstance(100, (int) height, Image.SCALE_SMOOTH);
+                    finalImage = new ImageIcon(resizedImg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             if (Window.isCustomer) {
-                row[0] = productList.get(i).getProduct();
-                row[1] = productList.get(i).getPrice();
-                row[2] = (productList.get(i).getAvailability() == 1) ? "Available" : "Not Available";
-                row[3] = finalImage;
+                data[i][0] = productList.get(i).getProduct();
+                data[i][1] = productList.get(i).getPrice();
+                data[i][2] = (productList.get(i).getAvailability() == 1) ? "Available" : "Not Available";
+                data[i][3] = finalImage;
             }
             else {
                 // cell data from the current row is added to the row array
-                row[0] = productList.get(i).getProductID();
-                row[1] = productList.get(i).getProduct();
-                row[2] = productList.get(i).getStockAmount();
-                row[3] = productList.get(i).getPrice();
-                row[4] = (productList.get(i).getAvailability() == 1) ? "Available" : "Not Available";
-                row[5] = finalImage;
+                data[i][0] = productList.get(i).getProductID();
+                data[i][1] = productList.get(i).getProduct();
+                data[i][2] = productList.get(i).getStockAmount();
+                data[i][3] = productList.get(i).getPrice();
+                data[i][4] = (productList.get(i).getAvailability() == 1) ? "Available" : "Not Available";
+                data[i][5] = finalImage;
             }
-            data[i] = row;  // this row is added to the table model
         }
 
         DefaultTableModel model = new DefaultTableModel( data, headers)
@@ -103,9 +111,7 @@ public class ViewStock extends JPanel implements ActionListener {
             //  renderers to be used based on Class
             public Class getColumnClass(int column)
             {
-                System.out.println("Column : " + column);
                 return getValueAt(0, column).getClass();
-
             }
         };
 
@@ -123,8 +129,10 @@ public class ViewStock extends JPanel implements ActionListener {
         add(returnButton);  // adds the return button to the JPanel
     }
 
+
+
     // the function below is used to gather all entries in the bookings database and return them
-    private ArrayList<Product> bookingList(){
+    private ArrayList<Product> getProducts(){
         // an arraylist for the bookings is created
         ArrayList<Product> productList = new ArrayList<>();
         // try catch block in case of SQL exception
@@ -143,7 +151,7 @@ public class ViewStock extends JPanel implements ActionListener {
             // while there is a next row in the database
             while(rs.next()){
                 // create a new booking object based on the current data
-                product = new Product(rs.getInt("productID"), rs.getString("product"), rs.getInt("stockAmount"), rs.getFloat("price"), rs.getInt("availability"));
+                product = new Product(rs.getInt("productID"), rs.getString("product"), rs.getInt("stockAmount"), rs.getFloat("price"), rs.getInt("availability"), rs.getString("image"));
                 productList.add(product);   // add that booking to the in-memory list
             }
         }

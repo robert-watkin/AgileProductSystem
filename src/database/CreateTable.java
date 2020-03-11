@@ -17,7 +17,7 @@ public class CreateTable {
                 "stockAmount integer NOT NULL, \n" +
                 "price float NOT NULL, \n" +
                 "availability bit NOT NULL, \n" +
-                "image string);";
+                "image string NOT NULL);";
 
         try (Connection conn = DriverManager.getConnection(url); Statement stmt = conn.createStatement()){
             stmt.execute(sql);

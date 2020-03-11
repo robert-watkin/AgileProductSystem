@@ -10,13 +10,15 @@ public class Product {
     int stockAmount;
     float price;
     int availability;
+    String image;
 
-    public Product(int productID, String product, int stockAmount, float price, int availability) {
+    public Product(int productID, String product, int stockAmount, float price, int availability, String image) {
         this.productID = productID;
         this.product = product;
         this.stockAmount = stockAmount;
         this.price = price;
         this.availability = availability;
+        this.image = image;
     }
 
     public int getAvailability() {
@@ -57,5 +59,13 @@ public class Product {
 
     public void setPrice(float price) {
         this.price = price;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

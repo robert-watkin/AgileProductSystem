@@ -2,6 +2,7 @@ package ProductSystemAgile;
 
 import database.AddProduct;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +16,10 @@ public class CreateProduct extends JPanel implements ActionListener {
     private JTextField nameField;
     private JTextField stockPriceField;
     private JTextField stockAmountField;
+    private JButton selectImage;
+    private JFileChooser chooser;
+    private String imageUrl = "";
+    private String imageButtonText = "Select Image";
 
     private String mode;
     // END OF VARIABLE DECLARATION
@@ -23,7 +28,7 @@ public class CreateProduct extends JPanel implements ActionListener {
     public CreateProduct(String mode) {
         this.mode = mode;
         // sets size of window
-        setPreferredSize(new Dimension(500, 350));
+        setPreferredSize(new Dimension(500, 400));
         initCreateBooking();    // initialises the create booking
 
 
@@ -45,7 +50,7 @@ public class CreateProduct extends JPanel implements ActionListener {
 
         innerPanel = new JPanel();
         innerPanel.setBackground(Window.backgroundColor);
-        innerPanel.setLayout(new GridLayout(4, 2, 15, 20));
+        innerPanel.setLayout(new GridLayout(5, 2, 15, 20));
 
         // ---------------NAME---------------
         // creates new JLabel to identify the name field
@@ -82,6 +87,14 @@ public class CreateProduct extends JPanel implements ActionListener {
         addProductButton.setActionCommand(pageTitle);
         returnButton.setActionCommand("return");
 
+        // --------------Image-----------------
+        JLabel imageLabel = new JLabel("Select Product Image : ");
+        imageLabel.setHorizontalAlignment(JLabel.RIGHT);
+        selectImage = new JButton(imageButtonText);
+        selectImage.setActionCommand("Select Image");
+        selectImage.addActionListener(this);
+
+
         // new panel to hold the buttons is created
 
         JPanel buttons = new JPanel(new GridLayout(0, 2, 30, 0));
@@ -105,6 +118,17 @@ public class CreateProduct extends JPanel implements ActionListener {
         innerPanel.add(stockPriceLabel);
         innerPanel.add(stockPriceField);
 
+        innerPanel.add(imageLabel);
+        innerPanel.add(selectImage);
+
+
+
+
+        // FILE CHOOSER
+        chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & PNG Images", "jpg", "png");
+        chooser.setFileFilter(filter);
+
 
 
 
@@ -116,12 +140,24 @@ public class CreateProduct extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
+        if ("Select Image".equals(actionEvent.getActionCommand())){
+            int returnVal = chooser.showOpenDialog(this);
+            if (returnVal == JFileChooser.APPROVE_OPTION){
+                System.out.println("File selected successfully...");
+                imageButtonText = chooser.getSelectedFile().getName();
+                imageUrl = chooser.getSelectedFile().getAbsolutePath();
+                selectImage.setText(imageButtonText);
+            } else {
+                System.out.println("Image selection cancelled...");
+            }
+        }
         if ("Add Product".equals(actionEvent.getActionCommand())) {
             // if the confirm button has been pressed
 
             try {
+
                 int availability = ( Integer.parseInt(stockAmountField.getText()) > 0 ) ? 1 : 0;
-                AddProduct.add(nameField.getText(), (int) Integer.parseInt(stockAmountField.getText()), Float.parseFloat(stockPriceField.getText()), availability);
+                AddProduct.add(nameField.getText(), (int) Integer.parseInt(stockAmountField.getText()), Float.parseFloat(stockPriceField.getText()), availability, imageUrl);
                 JOptionPane.showMessageDialog(this, "Product Successfully Added!");
                 Window.startMainMenu(); // return to the main menu
             } catch (Exception e){
@@ -133,7 +169,7 @@ public class CreateProduct extends JPanel implements ActionListener {
             try {
                 int availability = ( Integer.parseInt(stockAmountField.getText()) > 0 ) ? 1 : 0;
                 int id = Integer.parseInt(JOptionPane.showInputDialog("What is the ID of the product you wish to change?"));
-                AddProduct.update(id, nameField.getText(), (int) Integer.parseInt(stockAmountField.getText()), Float.parseFloat(stockPriceField.getText()), availability);
+                AddProduct.update(id, nameField.getText(), (int) Integer.parseInt(stockAmountField.getText()), Float.parseFloat(stockPriceField.getText()), availability, imageUrl);
                 JOptionPane.showMessageDialog(this, "Product Successfully Added!");
                 Window.startMainMenu(); // return to the main menu
             } catch (Exception e){
