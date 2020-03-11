@@ -35,10 +35,10 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
         else if (Window.isStaff)
             rows = 5;
         // sets the size of the window
-        this.setPreferredSize(new Dimension(300,(120* rows)));
+        this.setPreferredSize(new Dimension( 450,(60* rows) + 80));
 
         // creates the innerpanel with 'rows' as the number of rows
-        JPanel innerPanel = new JPanel(new GridLayout(rows,0,0,40));
+        JPanel innerPanel = new JPanel(new GridLayout((rows/2),2,15,40));
         innerPanel.setBackground(Window.backgroundColor);
 
         // sets relevent menu title depending on the user type
@@ -52,7 +52,9 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
             title = new JLabel("Stock - Staff");
 
         title.setFont(new Font("Arial", Font.PLAIN, 22));
-        innerPanel.add(title);
+        title.setPreferredSize(new Dimension( 450, 100));
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        this.add(title);
 
         // main menu buttons are declared and initialised
         JButton addNewProduct = new JButton();

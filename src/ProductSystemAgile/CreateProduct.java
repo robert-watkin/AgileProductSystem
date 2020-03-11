@@ -9,9 +9,6 @@ import java.awt.event.ActionListener;
 import java.util.Date;
 
 public class CreateProduct extends JPanel implements ActionListener {
-    private Date holidayDate;
-    private float cardFee;
-
     private JPanel innerPanel;
     private JTextField nameField;
     private JTextField stockPriceField;
@@ -38,7 +35,7 @@ public class CreateProduct extends JPanel implements ActionListener {
     private void initCreateBooking() {
         this.setBackground(Window.backgroundColor);
         // sets the layout for the class (extends JPanel) to a new flowlayout
-        this.setLayout(new FlowLayout(FlowLayout.LEADING, 0, 5));
+        this.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 5));
 
         String pageTitle = (mode.equalsIgnoreCase("add")) ? "Add Product" : "Update Product";
 
@@ -80,6 +77,9 @@ public class CreateProduct extends JPanel implements ActionListener {
         // creates two buttons (confirm, return)
         JButton addProductButton = new JButton(pageTitle);
         JButton returnButton = new JButton("Return");
+        // set the size of the buttons
+//        addProductButton.setPreferredSize(new Dimension(100, 50));
+//        returnButton.setPreferredSize(new Dimension(100, 50));
         // adds this class as an ActionListener for the two buttons
         addProductButton.addActionListener(this);
         returnButton.addActionListener(this);
@@ -98,9 +98,8 @@ public class CreateProduct extends JPanel implements ActionListener {
         // new panel to hold the buttons is created
 
         JPanel buttons = new JPanel(new GridLayout(0, 2, 30, 0));
-        buttons.setPreferredSize(new Dimension(300, 100));
         buttons.setBackground(Window.backgroundColor);
-        buttons.setPreferredSize(new Dimension(500, 50));
+        buttons.setPreferredSize(new Dimension(300, 50));
         buttons.setAlignmentX(CENTER_ALIGNMENT);
 
         // buttons are added to the panel

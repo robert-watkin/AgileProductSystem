@@ -23,6 +23,8 @@ public class Window  {
     private static JPanel loginScreen;
     private static JPanel createProduct;
     private static JPanel viewStock;
+    private static JPanel viewReviews;
+    private static JPanel createReview;
 
     public static Color backgroundColor = Color.orange;
     public static String url = "jdbc:sqlite:C:\\\\Users/robert.watkin\\IdeaProjects\\ProductSystemAgile\\stock.db";
@@ -89,6 +91,22 @@ public class Window  {
         viewStock = new ViewStock();
         f.getContentPane().removeAll();
         f.getContentPane().add(viewStock);
+        f.pack();
+        f.setVisible(true);
+    }
+
+    public static void startViewReviewsScreen(int productID){
+        viewReviews = new ViewReviews(productID);
+        f.getContentPane().removeAll();
+        f.getContentPane().add(viewReviews);
+        f.pack();
+        f.setVisible(true);
+    }
+
+    public static void startCreateReviewScreen(int productID){
+        createReview = new CreateReview(productID);
+        f.getContentPane().removeAll();
+        f.getContentPane().add(createReview);
         f.pack();
         f.setVisible(true);
     }

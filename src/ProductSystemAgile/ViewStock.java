@@ -1,24 +1,25 @@
 package ProductSystemAgile;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class ViewStock extends JPanel implements ActionListener {
 
     public ViewStock(){
-        initViewBookings();
+        initViewproducts();
     }
 
-    private void initViewBookings() {
+    private void initViewproducts() {
         this.setBackground(Window.backgroundColor);
         // sets the size of the window
         setPreferredSize(new Dimension(700,500));
@@ -26,17 +27,16 @@ public class ViewStock extends JPanel implements ActionListener {
 
         // creates a new button to return to the menu
         JButton returnButton = new JButton("Return");
+        returnButton.setActionCommand("Return");
         returnButton.addActionListener(this);   // adds this class as an ActionListener
         returnButton.setPreferredSize(new Dimension(250,80));   // sets the size for the button
         returnButton.setVisible(true);  // sets the buttons visibility to true
 
-        // new EMPTY vector to set the tables rows
-        Vector rows = new Vector();
-        int cols = 0;
+        int cols;
         if (Window.isCustomer)
-            cols = 4;
+            cols = 5;
         else
-            cols = 6;
+            cols = 7;
 
         // new vector to hold the header titles for the table
         String[] headers = new String[cols];
@@ -48,20 +48,17 @@ public class ViewStock extends JPanel implements ActionListener {
             headers[3] = "Price";
             headers[4] = "Availability";
             headers[5] = "Image";
+            headers[6] = "Reviews";
         } else{
             headers[0] = "Item";
             headers[1] = "Price";
             headers[2] = "Availability";
             headers[3] = "Image";
+            headers[4] = "Reviews";
         }
 
-        // array list holds all of the bookings in the database
+        // array list holds all of the products in the database
         ArrayList<Product> productList = getProducts();
-        for (Product p : productList){
-            System.out.println("================");
-            System.out.println(p.getProductID());
-            System.out.println(p.getProduct());
-        }
 
         // a new table model from the table above is created
 
@@ -72,6 +69,10 @@ public class ViewStock extends JPanel implements ActionListener {
         // for loop goes through each row in the database
         for (int i=0; i < productList.size(); i++){
             //String imgURL = productList.
+
+//            JButton reviewButton = new JButton("Reviews");
+//            reviewButton.setActionCommand(Integer.toString(productList.get(i).getProductID()));
+
             ImageIcon finalImage = new ImageIcon();
             String imgUrl = productList.get(i).getImage();
             if (imgUrl != null && !imgUrl.equals("")) {
@@ -113,6 +114,23 @@ public class ViewStock extends JPanel implements ActionListener {
             {
                 return getValueAt(0, column).getClass();
             }
+
+            @Override public Object getValueAt(final int row, final int column) {
+                if (Window.isCustomer && column == 4 || !Window.isCustomer && column == 6){
+                    final JButton button = new JButton("Reviews");
+                    button.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent arg0) {
+                            System.out.println("===================\n" +
+                                    "Button clicked for productID " + productList.get(row).getProductID());
+                            Window.startViewReviewsScreen(productList.get(row).getProductID());
+
+                        }
+                    });
+                    return button;
+                }
+                return data[row][column];
+            }
+
         };
 
         // tables is initialised with rows and headers
@@ -123,7 +141,12 @@ public class ViewStock extends JPanel implements ActionListener {
 
         // The table is added to a scroll pane incase of too many results for the set height of the table
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setPreferredSize(new Dimension(650,300));
+        scrollPane.setPreferredSize(new Dimension(650,400));
+
+        TableCellRenderer buttonRenderer = new JTableButtonRenderer();
+        table.getColumn("Reviews").setCellRenderer(buttonRenderer);
+        table.addMouseListener(new JTableButtonMouseListener(table));
+
 
         add(scrollPane, BorderLayout.CENTER);        // adds the scroll area (with the text area inside) ot the JPanel
         add(returnButton);  // adds the return button to the JPanel
@@ -131,42 +154,78 @@ public class ViewStock extends JPanel implements ActionListener {
 
 
 
-    // the function below is used to gather all entries in the bookings database and return them
+    // the function below is used to gather all entries in the products database and return them
     private ArrayList<Product> getProducts(){
-        // an arraylist for the bookings is created
+        // an arraylist for the products is created
         ArrayList<Product> productList = new ArrayList<>();
         // try catch block in case of SQL exception
         try{
             // connect to the database
             Connection conn = DriverManager.getConnection(Window.getUrl());
 
-            // query to get all data from the bookings table
+            // query to get all data from the products table
             String query1 = "SELECT * FROM products";
             Statement stmt =  conn.createStatement();   // new statment is created for the table
             ResultSet rs = stmt.executeQuery(query1);   // the statement executes the query and adds the data to a result set
 
-            // uninitialised booking object is created
+            // uninitialised product object is created
             Product product;
 
             // while there is a next row in the database
             while(rs.next()){
-                // create a new booking object based on the current data
+                // create a new product object based on the current data
                 product = new Product(rs.getInt("productID"), rs.getString("product"), rs.getInt("stockAmount"), rs.getFloat("price"), rs.getInt("availability"), rs.getString("image"));
-                productList.add(product);   // add that booking to the in-memory list
+                productList.add(product);   // add that product to the in-memory list
             }
         }
         catch (SQLException e){
             // in case of SQL exception, the error will be printed out.
             System.out.println(e.getMessage());
         }
-        // return the list of bookings
+        // return the list of products
         return productList;
     }
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         // return to menu when a button is pressed
-        // no need for an action command as there is only one button on this window
-        Window.startMainMenu();
+        if ("Return".equals(actionEvent.getActionCommand()))
+            Window.startMainMenu();
+        else {
+            Window.startViewReviewsScreen(Integer.parseInt(actionEvent.getActionCommand()));
+        }
+    }
+
+    public class JTableButtonMouseListener extends MouseAdapter {
+        private final JTable table;
+
+        public JTableButtonMouseListener(JTable table) {
+            this.table = table;
+        }
+
+        @Override public void mouseClicked(MouseEvent e) {
+            int column = table.getColumnModel().getColumnIndexAtX(e.getX());
+            int row    = e.getY()/table.getRowHeight();
+
+            if (row < table.getRowCount() && row >= 0 && column < table.getColumnCount() && column >= 0) {
+                Object value = table.getValueAt(row, column);
+                if (value instanceof JButton) {
+                    ((JButton)value).doClick();
+                }
+            }
+        }
+    }
+    public static class JTableButtonRenderer implements TableCellRenderer {
+        @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JButton button = (JButton)value;
+            if (isSelected) {
+                button.setForeground(table.getSelectionForeground());
+                button.setBackground(table.getSelectionBackground());
+            } else {
+                button.setForeground(table.getForeground());
+                button.setBackground(UIManager.getColor("Button.background"));
+            }
+            return button;
+        }
     }
 }
