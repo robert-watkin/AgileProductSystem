@@ -6,20 +6,20 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
+import JTable.JTableButtonRenderer;
+import JTable.JTableButtonMouseListener;
 
 public class ViewStock extends JPanel implements ActionListener {
 
     public ViewStock(){
-        initViewproducts();
+        initViewProducts();
     }
 
-    private void initViewproducts() {
+    private void initViewProducts() {
         this.setBackground(Window.backgroundColor);
         // sets the size of the window
         setPreferredSize(new Dimension(700,500));
@@ -32,9 +32,16 @@ public class ViewStock extends JPanel implements ActionListener {
         returnButton.setPreferredSize(new Dimension(250,80));   // sets the size for the button
         returnButton.setVisible(true);  // sets the buttons visibility to true
 
+        // creates a new button to show the basket
+        JButton viewBasketButton = new JButton("View Basket");
+        viewBasketButton.setActionCommand("View Basket");
+        viewBasketButton.addActionListener(this);   // adds this class as an ActionListener
+        viewBasketButton.setPreferredSize(new Dimension(250,80));   // sets the size for the button
+        viewBasketButton.setVisible(true);  // sets the buttons visibility to true
+
         int cols;
         if (Window.isCustomer)
-            cols = 5;
+            cols = 6;
         else
             cols = 7;
 
@@ -55,6 +62,7 @@ public class ViewStock extends JPanel implements ActionListener {
             headers[2] = "Availability";
             headers[3] = "Image";
             headers[4] = "Reviews";
+            headers[5] = "Add to Basket";
         }
 
         // array list holds all of the products in the database
@@ -94,6 +102,7 @@ public class ViewStock extends JPanel implements ActionListener {
                 data[i][1] = productList.get(i).getPrice();
                 data[i][2] = (productList.get(i).getAvailability() == 1) ? "Available" : "Not Available";
                 data[i][3] = finalImage;
+                data[i][5] = "";
             }
             else {
                 // cell data from the current row is added to the row array
@@ -103,6 +112,7 @@ public class ViewStock extends JPanel implements ActionListener {
                 data[i][3] = productList.get(i).getPrice();
                 data[i][4] = (productList.get(i).getAvailability() == 1) ? "Available" : "Not Available";
                 data[i][5] = finalImage;
+
             }
         }
 
@@ -118,12 +128,50 @@ public class ViewStock extends JPanel implements ActionListener {
             @Override public Object getValueAt(final int row, final int column) {
                 if (Window.isCustomer && column == 4 || !Window.isCustomer && column == 6){
                     final JButton button = new JButton("Reviews");
+                    button.setFont(new Font("Arial", Font.PLAIN, 12));
                     button.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent arg0) {
                             System.out.println("===================\n" +
                                     "Button clicked for productID " + productList.get(row).getProductID());
                             Window.startViewReviewsScreen(productList.get(row).getProductID());
 
+                        }
+                    });
+                    return button;
+                }
+                else if (Window.isCustomer && column == 5) {
+                    final JButton button = new JButton("Add to Basket");
+                    button.setFont(new Font("Arial", Font.PLAIN, 12));
+                    button.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent arg0) {
+                            System.out.println("===================\n" +
+                                    "Button clicked for to add product ID '" + productList.get(row).getProductID() + "'to basket ");
+                            while (true) {
+                                if (productList.get(row).getAvailability() == 0){
+                                    JOptionPane.showMessageDialog(null, "Sorry! This item is currently unavailable");
+                                    break;
+                                }
+                                if (Basket.getBasket().contains(productList.get(row))){
+                                    JOptionPane.showMessageDialog(null, "Sorry! This product is already in your basket");
+                                    break;
+                                }
+                                try {
+                                    String quantityS = JOptionPane.showInputDialog("How many would you like to add to basket");
+                                    if (quantityS.isEmpty())
+                                        break;
+                                    int quantity = Integer.parseInt(quantityS);
+                                    if (quantity > productList.get(row).getStockAmount()) {
+                                        JOptionPane.showMessageDialog(null, "There are not that many " + productList.get(row).getProduct() + "'s available at the moment.");
+                                    } else {
+                                        Basket.addToBasket(productList.get(row), quantity);
+                                        JOptionPane.showMessageDialog(null, productList.get(row).getProduct() + " added successfully");
+                                        break;
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    JOptionPane.showMessageDialog(null, "ERROR! Please enter a valid number.");
+                                }
+                            }
                         }
                     });
                     return button;
@@ -145,13 +193,23 @@ public class ViewStock extends JPanel implements ActionListener {
 
         TableCellRenderer buttonRenderer = new JTableButtonRenderer();
         table.getColumn("Reviews").setCellRenderer(buttonRenderer);
+        if (Window.isCustomer)
+            table.getColumn("Add to Basket").setCellRenderer(buttonRenderer);
         table.addMouseListener(new JTableButtonMouseListener(table));
 
+        int c = (Window.isCustomer) ? 2 : 1;
+
+        JPanel buttons = new JPanel(new GridLayout(1, c, 15,0));
+        buttons.setPreferredSize(new Dimension(200 * c, 80));
+        buttons.setBackground(Window.backgroundColor);
+
+        if (Window.isCustomer)
+            buttons.add(viewBasketButton);
+        buttons.add(returnButton);
 
         add(scrollPane, BorderLayout.CENTER);        // adds the scroll area (with the text area inside) ot the JPanel
-        add(returnButton);  // adds the return button to the JPanel
+        add(buttons);  // adds the return button to the JPanel
     }
-
 
 
     // the function below is used to gather all entries in the products database and return them
@@ -191,41 +249,12 @@ public class ViewStock extends JPanel implements ActionListener {
         // return to menu when a button is pressed
         if ("Return".equals(actionEvent.getActionCommand()))
             Window.startMainMenu();
+        else if ("View Basket".equals(actionEvent.getActionCommand())){
+            Window.startViewBasketScreen(getProducts());
+        }
         else {
             Window.startViewReviewsScreen(Integer.parseInt(actionEvent.getActionCommand()));
         }
     }
 
-    public class JTableButtonMouseListener extends MouseAdapter {
-        private final JTable table;
-
-        public JTableButtonMouseListener(JTable table) {
-            this.table = table;
-        }
-
-        @Override public void mouseClicked(MouseEvent e) {
-            int column = table.getColumnModel().getColumnIndexAtX(e.getX());
-            int row    = e.getY()/table.getRowHeight();
-
-            if (row < table.getRowCount() && row >= 0 && column < table.getColumnCount() && column >= 0) {
-                Object value = table.getValueAt(row, column);
-                if (value instanceof JButton) {
-                    ((JButton)value).doClick();
-                }
-            }
-        }
-    }
-    public static class JTableButtonRenderer implements TableCellRenderer {
-        @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JButton button = (JButton)value;
-            if (isSelected) {
-                button.setForeground(table.getSelectionForeground());
-                button.setBackground(table.getSelectionBackground());
-            } else {
-                button.setForeground(table.getForeground());
-                button.setBackground(UIManager.getColor("Button.background"));
-            }
-            return button;
-        }
-    }
 }

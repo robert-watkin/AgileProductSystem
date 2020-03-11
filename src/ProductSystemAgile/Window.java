@@ -7,6 +7,8 @@ package ProductSystemAgile;
 import database.InitDatabase;
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 // This class holds all other windows for the software
 public class Window  {
@@ -19,12 +21,14 @@ public class Window  {
     static boolean isCustomer;
     static boolean isStaff;
 
+
     private static JPanel mainMenu;
     private static JPanel loginScreen;
     private static JPanel createProduct;
     private static JPanel viewStock;
     private static JPanel viewReviews;
     private static JPanel createReview;
+    private static JPanel viewBasket;
 
     public static Color backgroundColor = Color.orange;
     public static String url = "jdbc:sqlite:C:\\\\Users/robert.watkin\\IdeaProjects\\ProductSystemAgile\\stock.db";
@@ -107,6 +111,14 @@ public class Window  {
         createReview = new CreateReview(productID);
         f.getContentPane().removeAll();
         f.getContentPane().add(createReview);
+        f.pack();
+        f.setVisible(true);
+    }
+
+    public static void startViewBasketScreen(ArrayList<Product> productList){
+        viewBasket = new ViewBasket(productList);
+        f.getContentPane().removeAll();
+        f.getContentPane().add(viewBasket);
         f.pack();
         f.setVisible(true);
     }

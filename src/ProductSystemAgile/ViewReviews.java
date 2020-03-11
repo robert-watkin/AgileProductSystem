@@ -75,6 +75,7 @@ public class ViewReviews extends JPanel implements ActionListener {
             {
                 return getValueAt(0, column).getClass();
             }
+
         };
 
         // tables is initialised with rows and headers
