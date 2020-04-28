@@ -30,7 +30,7 @@ public class Window  {
     private static JPanel createReview;
     private static JPanel viewBasket;
 
-    public static Color backgroundColor = Color.orange;
+    public static Color backgroundColor = Color.lightGray;
     public static String url = "jdbc:sqlite:C:\\\\Users/robert.watkin\\IdeaProjects\\ProductSystemAgile\\stock.db";
     // END OF VARIABLE DECLARATION
 

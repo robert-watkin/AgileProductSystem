@@ -25,7 +25,7 @@ public class LoginScreen extends JPanel implements ActionListener {
     // Constructor
     public LoginScreen (){
         // sets JPanel size
-        setPreferredSize(new Dimension(400,300));
+        setPreferredSize(new Dimension(350,250));
         initLoginComponents();  // calls function to initialise components
     }
 
@@ -60,7 +60,7 @@ public class LoginScreen extends JPanel implements ActionListener {
 
         // two new JPanels are created to hold the components - used for the layout
         JPanel outerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JPanel innerPanel = new JPanel(new GridLayout(4,2,15,20));
+        JPanel innerPanel = new JPanel(new GridLayout(3,2,15,20));
 
         // creates new label for the menu title
         // VARIABLE DECLARATION
@@ -105,10 +105,10 @@ public class LoginScreen extends JPanel implements ActionListener {
         JButton loginButton = new JButton("Login");
         loginButton.setActionCommand("login");  // sets the buttons command which will be used when the button is pressed
         loginButton.addActionListener(this);    // adds this class as an actionlistener for the button
-
+        loginButton.setPreferredSize(new Dimension(250, 50));
 
         // adds both buttons to the innerpanel
-        innerPanel.add(loginButton);
+
 
         // sets the panels background color based on the global static variable in the Window class
         outerPanel.setBackground(Window.backgroundColor);
@@ -117,6 +117,7 @@ public class LoginScreen extends JPanel implements ActionListener {
         // adds the innerpanel to the outerpanel
         outerPanel.add(innerPanel);
         add(outerPanel);    // adds the outerpanel to the overall class which extends JPanel - therefore the class is a JPanel
+        add(loginButton);
     }
 
 
