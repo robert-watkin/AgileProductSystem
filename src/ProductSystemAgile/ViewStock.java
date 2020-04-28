@@ -256,5 +256,4 @@ public class ViewStock extends JPanel implements ActionListener {
             Window.startViewReviewsScreen(Integer.parseInt(actionEvent.getActionCommand()));
         }
     }
-
 }

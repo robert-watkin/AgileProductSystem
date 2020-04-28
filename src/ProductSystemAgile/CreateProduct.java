@@ -6,7 +6,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
 
 public class CreateProduct extends JPanel implements ActionListener {
     private JPanel innerPanel;
@@ -26,13 +25,13 @@ public class CreateProduct extends JPanel implements ActionListener {
         this.mode = mode;
         // sets size of window
         setPreferredSize(new Dimension(500, 400));
-        initCreateBooking();    // initialises the create booking
+        initCreateProduct();    // initialises the create booking
 
 
     }
 
     // the funciton below initialises all components of the createBooking window
-    private void initCreateBooking() {
+    private void initCreateProduct() {
         this.setBackground(Window.backgroundColor);
         // sets the layout for the class (extends JPanel) to a new flowlayout
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 5));

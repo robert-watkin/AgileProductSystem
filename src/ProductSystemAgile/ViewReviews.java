@@ -108,7 +108,7 @@ public class ViewReviews extends JPanel implements ActionListener {
             Statement stmt = conn.createStatement();   // new statment is created for the table
             ResultSet rs = stmt.executeQuery(query1);   // the statement executes the query and adds the data to a result set
 
-            // uninitialised product object is created
+            // uninitialised review object is created
             Review review;
 
             // while there is a next row in the database
