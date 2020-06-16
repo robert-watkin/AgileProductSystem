@@ -170,7 +170,7 @@
     <mkdir dir="${artifact.temp.output.hotelbookingsystem:jar}"/>
     <jar destfile="${temp.jar.path.hotelBookingSystem.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
       <zipfileset dir="${hotelbookingsystem.output.dir}"/>
-      <zipfileset file="${basedir}/sqlite-jdbc-3.27.2.1.jar"/>
+      <zipfileset file="/lib/sqlite-jdbc-3.27.2.1.jar"/>
     </jar>
     <copy file="${temp.jar.path.hotelBookingSystem.jar}" tofile="${artifact.temp.output.hotelbookingsystem:jar}/hotelBookingSystem.jar"/>
   </target>

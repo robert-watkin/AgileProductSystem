@@ -7,6 +7,7 @@ package ProductSystemAgile;
 import database.InitDatabase;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -15,12 +16,10 @@ public class Window  {
     // VARIABLE DECLARATION
     private static JFrame f;
 
-
     static boolean loggedIn;
     static boolean isAdmin;
     static boolean isCustomer;
     static boolean isStaff;
-
 
     private static JPanel mainMenu;
     private static JPanel loginScreen;
@@ -31,11 +30,14 @@ public class Window  {
     private static JPanel viewBasket;
 
     public static Color backgroundColor = Color.lightGray;
-    public static String url = "jdbc:sqlite:C:\\\\Users/robert.watkin\\IdeaProjects\\ProductSystemAgile\\stock.db";
+    final static File applicationUrl = new File(Window.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+    public static String url = "jdbc:sqlite:lib/stock.db";
+
     // END OF VARIABLE DECLARATION
 
     // Program entry point - main function
     public static void main(String[] args) {
+        System.out.println(url);
         // initialises a new window object
         Window w = new Window();
         InitDatabase.initDB(url);
@@ -45,7 +47,6 @@ public class Window  {
     // init function sets up the applications window
     private void init() {
         // creates a new JFrame where all components will be held
-
         f = new JFrame();
         loggedIn = false;   // ensure that no one is logged in when the application is started
 

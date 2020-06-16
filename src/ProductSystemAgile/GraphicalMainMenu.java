@@ -35,10 +35,10 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
         else if (Window.isStaff)
             rows = 5;
         // sets the size of the window
-        this.setPreferredSize(new Dimension( 450,(60* rows) + 80));
+        this.setPreferredSize(new Dimension( 300,(65* rows) + 80));
 
         // creates the innerpanel with 'rows' as the number of rows
-        JPanel innerPanel = new JPanel(new GridLayout((rows/2),2,15,40));
+        JPanel innerPanel = new JPanel(new GridLayout((rows),1,15,20));
         innerPanel.setBackground(Window.backgroundColor);
 
         // sets relevent menu title depending on the user type
@@ -72,7 +72,7 @@ public class GraphicalMainMenu extends JPanel implements ActionListener {
         logout.setActionCommand("logout");
 
         // sets the size of the create booking button - due to being in a gridlayout, all components in the grid will have this layout
-        logout.setPreferredSize(new Dimension(150,75));
+        logout.setPreferredSize(new Dimension(150,50));
 
         // button alignement is set so they are all centered
         addNewProduct.setAlignmentX(Component.CENTER_ALIGNMENT);

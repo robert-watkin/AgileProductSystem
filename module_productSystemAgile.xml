@@ -17,24 +17,24 @@
   
   <path id="hotelbookingsystem.module.production.classpath">
     <path refid="${module.jdk.classpath.hotelbookingsystem}"/>
-    <pathelement location="${basedir}/sqlite-jdbc-3.27.2.1.jar"/>
+    <pathelement location="/lib/sqlite-jdbc-3.27.2.1.jar"/>
   </path>
   
   <path id="hotelbookingsystem.runtime.production.module.classpath">
     <pathelement location="${hotelbookingsystem.output.dir}"/>
-    <pathelement location="${basedir}/sqlite-jdbc-3.27.2.1.jar"/>
+    <pathelement location="/lib/sqlite-jdbc-3.27.2.1.jar"/>
   </path>
   
   <path id="hotelbookingsystem.module.classpath">
     <path refid="${module.jdk.classpath.hotelbookingsystem}"/>
     <pathelement location="${hotelbookingsystem.output.dir}"/>
-    <pathelement location="${basedir}/sqlite-jdbc-3.27.2.1.jar"/>
+    <pathelement location="/lib/sqlite-jdbc-3.27.2.1.jar"/>
   </path>
   
   <path id="hotelbookingsystem.runtime.module.classpath">
     <pathelement location="${hotelbookingsystem.testoutput.dir}"/>
     <pathelement location="${hotelbookingsystem.output.dir}"/>
-    <pathelement location="${basedir}/sqlite-jdbc-3.27.2.1.jar"/>
+    <pathelement location="/lib/sqlite-jdbc-3.27.2.1.jar"/>
   </path>
   
   
